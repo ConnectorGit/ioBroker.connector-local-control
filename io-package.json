@@ -1,0 +1,75 @@
+{
+  "common": {
+    "name": "connector-local-control",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
+    },
+    "title": "Connector Local Control",
+    "titleLang": {
+      "en": "Connector Local Control",
+      "de": "Connector Local Control",
+      "ru": "Разъем местного управления",
+      "pt": "Controle local do conector",
+      "nl": "Connector Lokale besturing",
+      "fr": "Contrôle local du connecteur",
+      "it": "Controllo locale del connettore",
+      "es": "Control local del conector",
+      "pl": "Sterowanie lokalne złącza",
+      "zh-cn": "连接器本地控制"
+    },
+    "desc": {
+      "en": "Connector Local Control",
+      "de": "Connector Local Control",
+      "ru": "Разъем местного управления",
+      "pt": "Controle local do conector",
+      "nl": "Connector Lokale besturing",
+      "fr": "Contrôle local du connecteur",
+      "it": "Controllo locale del connettore",
+      "es": "Control local del conector",
+      "pl": "Sterowanie lokalne złącza",
+      "zh-cn": "连接器本地控制"
+    },
+    "authors": [
+      "lucas <admin@shadeconnector.com>"
+    ],
+    "keywords": [
+      "up",
+      "down",
+      "stop",
+      "targetPosition"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "connector-local-control.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/ConnectorGit/ioBroker.connector-local-control/master/admin/connector-local-control.png",
+    "readme": "https://github.com/ConnectorGit/ioBroker.connector-local-control/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "iot-systems",
+    "compact": true,
+    "materialize": true,
+    "dependencies": [
+      {
+        "js-controller": ">=1.4.2"
+      }
+    ],
+    "installedFrom": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180"
+  },
+  "native": {},
+  "objects": [],
+  "instanceObjects": []
+}

@@ -1,0 +1,81 @@
+{
+  "_from": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+  "_id": "iobroker.connector-local-control@0.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-IksbksfhvIyW7/Oe3oBFd+6+SOEgMN03kZApcQPwXbEWsN+Md+5DinLwFrgvJ6VStGovTLhPi/u4Qvb5+TZIng==",
+  "_location": "/iobroker.connector-local-control",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+    "rawSpec": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+    "saveSpec": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+    "fetchSpec": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+  "_shasum": "0126edc525c0b267456e47bbbca2ef549b7c45a1",
+  "_spec": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180",
+  "_where": "C:\\iobroker",
+  "author": {
+    "name": "lucas",
+    "email": "admin@shadeconnector.com"
+  },
+  "bugs": {
+    "url": "https://github.com/ConnectorGit/ioBroker.connector-local-control/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@iobroker/adapter-core": "^2.4.0",
+    "crypto": "^1.0.1",
+    "dgram": "^1.0.1"
+  },
+  "deprecated": false,
+  "description": "Connector Local Control",
+  "devDependencies": {
+    "@iobroker/testing": "^2.3.0",
+    "@types/chai": "^4.2.14",
+    "@types/chai-as-promised": "^7.1.3",
+    "@types/gulp": "^4.0.7",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^14.14.10",
+    "@types/proxyquire": "^1.3.28",
+    "@types/sinon": "^9.0.9",
+    "@types/sinon-chai": "^3.2.5",
+    "axios": "^0.21.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^7.14.0",
+    "gulp": "^4.0.2",
+    "mocha": "^8.2.1",
+    "proxyquire": "^2.1.3",
+    "sinon": "^9.2.1",
+    "sinon-chai": "^3.5.0"
+  },
+  "homepage": "https://github.com/ConnectorGit/ioBroker.connector-local-control",
+  "keywords": [
+    "up",
+    "down",
+    "stop",
+    "targetPosition"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "iobroker.connector-local-control",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConnectorGit/ioBroker.connector-local-control.git"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "test": "npm run test:js && npm run test:package",
+    "test:integration": "mocha test/integration --exit",
+    "test:js": "mocha \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
+    "test:package": "mocha test/package --exit",
+    "test:unit": "mocha test/unit --exit"
+  },
+  "version": "0.0.1"
+}
