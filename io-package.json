@@ -66,8 +66,7 @@
       {
         "js-controller": ">=1.4.2"
       }
-    ],
-    "installedFrom": "https://github.com/ConnectorGit/ioBroker.connector-local-control/tarball/ea83a6e36ce669cc9c451c8d73a055e7548c8180"
+    ]
   },
   "native": {},
   "objects": [],

@@ -10,6 +10,28 @@
 
 Connector Local Control
 
+## Configuration
+
+Click the about page of the connector app 5 times to get the key
+
+## Additional information
+
+You can control blinds.
+
+### States: 
+
+Two Way Blinds: 
+
+- Battery Status
+- RSSI
+- Current Position
+- Target Position
+
+One Way Blinds:
+
+- UP
+- DOWN
+- STOP
 
 ## Changelog
 
