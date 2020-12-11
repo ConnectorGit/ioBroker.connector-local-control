@@ -243,7 +243,7 @@ function controlDevice(operation, targetPosition, mac, deviceType, token, key)  
 
 function sendData(data)
 {
-    console.log("发送：" + data);
+    console.log("send：" + data);
     client.send(data,32100,'238.0.0.18', function (error) {
         if (error)
         {
