@@ -198,7 +198,7 @@ function getDeviceList()
         msgID: uuid.generateUUID(),
     }
     let sendData = JSON.stringify(sendData_obj);
-    adapter.log.info("发送：" + sendData);
+    adapter.log.info("send：" + sendData);
     client.send(sendData,32100,'238.0.0.18', function (error) {
         if (error)
         {

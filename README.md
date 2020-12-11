@@ -22,8 +22,9 @@ You can control blinds.
 
 Two Way Blinds: 
 
-- Battery Status
-- RSSI
+- UP
+- DOWN
+- STOP
 - Current Position
 - Target Position
 
