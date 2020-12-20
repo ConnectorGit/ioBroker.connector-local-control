@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "connector-local-control",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "news": {
       "0.0.1": {
         "en": "initial release",
@@ -68,7 +68,10 @@
       }
     ]
   },
-  "native": {},
+  "native": {
+    "user": "",
+    "openPercent": "0"
+  },
   "objects": [],
   "instanceObjects": []
 }

@@ -9,11 +9,14 @@ const adapterName = require('./package.json').name.split('.').pop();
 let client = dgram.createSocket('udp4');
 
 let adapter;
+let key = "";
+let openPercent = "";
 
 function startAdapter(options) {
     options = options || {};
     Object.assign(options, {name: adapterName});
     adapter = new utils.Adapter(options);
+
     adapter.on('ready', function () {
         main();
     });
@@ -29,13 +32,11 @@ function startAdapter(options) {
     });
 
     adapter.on('stateChange', function (id, state) {
-        const aaa = acc.generateAcc("967DC7CD55376DA9", "5acb1823-d7ff-46");
         if (!id || !state || state.ack) {
             return;
         }
-        const key = adapter.config.user;
-        if (key === null || key.length !== 16){
-            adapter.log.info("please enter the key");
+        if (key.length !== 16){
+            adapter.log.info("please enter the right key");
             return;
         }
         const pos = id.lastIndexOf('.');
@@ -57,13 +58,22 @@ function startAdapter(options) {
                 TempOperation = 2;
             } else if (IDState === "targetPosition") {
                 TempTargetPosition =  parseInt(state.val);
+            } else is (IDState === "fav"){
+                TempOperation = 12;
             }
             if (TempOperation !== null)
             {
                 controlDevice(TempOperation, null, obj.native.mac, obj.native.deviceType, obj.native.token, key);
             } else if(TempTargetPosition !== null)
             {
-                controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
+                if (openPercent=== 0)
+                {
+                    controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
+                }
+                else if(openPercent === 100)
+                {
+                    controlDevice(null,100-TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
+                }
             }
         });
 
@@ -84,8 +94,8 @@ async function main() {
         client.addMembership('238.0.0.18');
     })
 
-    const key = adapter.config.user;
-    adapter.log.info(key)
+    key = adapter.config.user;
+    openPercent = adapter.config.openPercent;
     adapter.subscribeStates('*');
     getDeviceList();
 
@@ -152,6 +162,16 @@ async function main() {
                         }
                     });
 
+                    adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.fav', {
+                        type: 'state',
+                        common: {
+                            name: 'fav',
+                            role: 'button',
+                            write: true,
+                            read: false
+                        }
+                    });
+
                     adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.targetPosition', {
                         type: 'state',
                         common: {
@@ -159,6 +179,28 @@ async function main() {
                             unit: '%',
                             role: 'value.motor',
                             write: true,
+                            read: true
+                        }
+                    });
+
+                    adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.rssi', {
+                        type: 'state',
+                        common: {
+                            name: 'rssi',
+                            unit: 'db',
+                            role: 'value.motor',
+                            write: false,
+                            read: true
+                        }
+                    });
+
+                    adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.batteryLevel', {
+                        type: 'state',
+                        common: {
+                            name: 'batteryLevel',
+                            unit: 'V',
+                            role: 'value.motor',
+                            write: false,
                             read: true
                         }
                     });
@@ -174,6 +216,7 @@ async function main() {
                         }
                     });
                     setStates(obj.mac + '.' + obj.data[motor].mac + '.currentPosition', "unknow");
+                    controlDevice(5, null, obj.data[motor].mac, obj.data[motor].deviceType, obj.token, key);
                 }
             }
         }
@@ -186,7 +229,24 @@ async function main() {
             if (obj.msgType === "Report") {
                 const hub_mac = obj.mac.substring(0, obj.mac.length-4);
                 adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
-                setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
+                if (openPercent === "0")
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
+                }
+                else if(openPercent === "100")
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', (100 - obj.data.currentPosition).toString());
+                }
+                setStates(hub_mac+'.'+obj.mac+'.rssi', obj.data.RSSI.toString());
+                if (obj.data.voltageMode === 1)
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.batteryLevel', (obj.data.batteryLevel/100).toString());
+                }
+                else
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.batteryLevel', "120 or 220");
+                }
+
             }
     });
 }
@@ -198,7 +258,7 @@ function getDeviceList()
         msgID: uuid.generateUUID(),
     }
     let sendData = JSON.stringify(sendData_obj);
-    adapter.log.info("send：" + sendData);
+    //adapter.log.info("send：" + sendData);
     client.send(sendData,32100,'238.0.0.18', function (error) {
         if (error)
         {
@@ -217,7 +277,6 @@ function controlDevice(operation, targetPosition, mac, deviceType, token, key)  
             mac: mac,
             deviceType: deviceType,
             AccessToken: acc.generateAcc(token, key),
-            //AccessToken: acc.generateAcc("967DC7CD55376DA9", "5acb1823-d7ff-46"),
             msgID: uuid.generateUUID(),
             data:{
                 operation: operation
@@ -231,10 +290,9 @@ function controlDevice(operation, targetPosition, mac, deviceType, token, key)  
             mac: mac,
             deviceType: deviceType,
             AccessToken: acc.generateAcc(token, key),
-            //AccessToken: acc.generateAcc("967DC7CD55376DA9", "5acb1823-d7ff-46"),
             msgID: uuid.generateUUID(),
             data:{
-                targetPosition: 100-targetPosition
+                targetPosition: targetPosition
             }
         }
     }
@@ -243,7 +301,7 @@ function controlDevice(operation, targetPosition, mac, deviceType, token, key)  
 
 function sendData(data)
 {
-    console.log("send：" + data);
+    //console.log("send：" + data);
     client.send(data,32100,'238.0.0.18', function (error) {
         if (error)
         {
