@@ -58,7 +58,7 @@ function startAdapter(options) {
                 TempOperation = 2;
             } else if (IDState === "targetPosition") {
                 TempTargetPosition =  parseInt(state.val);
-            } else is (IDState === "fav"){
+            } else if (IDState === "fav"){
                 TempOperation = 12;
             }
             if (TempOperation !== null)
