@@ -216,7 +216,10 @@ async function main() {
                         }
                     });
                     setStates(obj.mac + '.' + obj.data[motor].mac + '.currentPosition', "unknow");
-                    controlDevice(5, null, obj.data[motor].mac, obj.data[motor].deviceType, obj.token, key);
+                    if (key.length === 16)
+                    {
+                        controlDevice(5, null, obj.data[motor].mac, obj.data[motor].deviceType, obj.token, key);
+                    }
                 }
             }
         }
