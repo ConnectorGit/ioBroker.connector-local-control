@@ -27,6 +27,10 @@ Two Way Blinds:
 - STOP
 - Current Position
 - Target Position
+- RSSI
+- BatteryLevel
+- Fav
+
 
 One Way Blinds:
 
