@@ -67,12 +67,12 @@ function startAdapter(options) {
             {
                 if (openPercent === "0")
                 {
-                    adapter.log.info("openpercent:"+openPercent);
+                    //adapter.log.info("openpercent:"+openPercent);
                     controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
                 }
                 else if(openPercent === "100")
                 {
-                    adapter.log.info("openpercent:"+openPercent);
+                    //adapter.log.info("openpercent:"+openPercent);
                     controlDevice(null,100-TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
                 }
             }
@@ -273,7 +273,7 @@ function getDeviceList()
 
 function controlDevice(operation, targetPosition, mac, deviceType, token, key)  //控制设备
 {
-    adapter.log.info("enter device control")
+    //adapter.log.info("enter device control")
     let sendData_obj;
     if (operation !== null)
     {
