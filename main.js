@@ -48,8 +48,7 @@ function startAdapter(options) {
         var TempTargetPosition = null;
 
         adapter.getObject(channelId, (err, obj) => {
-            adapter.log.info(obj.native.mac);
-
+            // adapter.log.info(obj.native.mac);
             if (IDState === "up") {
                 TempOperation = 1;
             } else if (IDState === "down") {
@@ -66,12 +65,14 @@ function startAdapter(options) {
                 controlDevice(TempOperation, null, obj.native.mac, obj.native.deviceType, obj.native.token, key);
             } else if(TempTargetPosition !== null)
             {
-                if (openPercent=== 0)
+                if (openPercent === "0")
                 {
+                    adapter.log.info("openpercent:"+openPercent);
                     controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
                 }
-                else if(openPercent === 100)
+                else if(openPercent === "100")
                 {
+                    adapter.log.info("openpercent:"+openPercent);
                     controlDevice(null,100-TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
                 }
             }
@@ -100,7 +101,7 @@ async function main() {
     getDeviceList();
 
     client.on('message', (msg, rinfo) => {
-        adapter.log.info(`receive server message from ${rinfo.address}: ${rinfo.port}: ${msg}`);
+        // adapter.log.info(`receive server message from ${rinfo.address}: ${rinfo.port}: ${msg}`);
         let obj = JSON.parse(msg.toString());
         if (obj.msgType === "GetDeviceListAck") {
             adapter.setObjectNotExists(obj.mac, {
@@ -231,7 +232,7 @@ async function main() {
             }
             if (obj.msgType === "Report") {
                 const hub_mac = obj.mac.substring(0, obj.mac.length-4);
-                adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
+                // adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
                 if (openPercent === "0")
                 {
                     setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
@@ -272,6 +273,7 @@ function getDeviceList()
 
 function controlDevice(operation, targetPosition, mac, deviceType, token, key)  //控制设备
 {
+    adapter.log.info("enter device control")
     let sendData_obj;
     if (operation !== null)
     {

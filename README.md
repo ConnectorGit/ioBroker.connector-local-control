@@ -46,6 +46,9 @@ One Way Blinds:
 ### 0.0.2
 * Added other functions
 
+### 0.0.3
+* Fix percentage control bug
+
 ## License
 MIT License
 
