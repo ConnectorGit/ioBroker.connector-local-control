@@ -49,6 +49,10 @@ One Way Blinds:
 ### 0.0.3
 * Fix percentage control bug
 
+### 0.0.4
+* Adapt to the new version of hub
+* Add angle control function
+
 ## License
 MIT License
 
