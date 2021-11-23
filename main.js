@@ -46,6 +46,7 @@ function startAdapter(options) {
 
         var TempOperation = null;
         var TempTargetPosition = null;
+        var TempTargetAngle = null;
 
         adapter.getObject(channelId, (err, obj) => {
             // adapter.log.info(obj.native.mac);
@@ -59,6 +60,8 @@ function startAdapter(options) {
                 TempTargetPosition =  parseInt(state.val);
             } else if (IDState === "fav"){
                 TempOperation = 12;
+            } else if (IDState === "targetAngle"){
+                TempTargetAngle = parseInt(state.val);
             }
             if (TempOperation !== null)
             {
@@ -68,13 +71,16 @@ function startAdapter(options) {
                 if (openPercent === "0")
                 {
                     //adapter.log.info("openpercent:"+openPercent);
-                    controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
+                    controlDevice(null,TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key, null);
                 }
                 else if(openPercent === "100")
                 {
                     //adapter.log.info("openpercent:"+openPercent);
-                    controlDevice(null,100-TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key);
+                    controlDevice(null,100-TempTargetPosition, obj.native.mac, obj.native.deviceType, obj.native.token, key, null);
                 }
+            } else if(TempTargetAngle !== null)
+            {
+                controlDevice(null,null, obj.native.mac, obj.native.deviceType, obj.native.token, key, TempTargetAngle);
             }
         });
 
@@ -90,6 +96,8 @@ function setStates(id, val) {
     return '';
 }
 
+const delay = ms => new Promise((resolve, reject) => setTimeout(resolve, ms))
+
 async function main() {
     client.bind(32101, function () {
         client.addMembership('238.0.0.18');
@@ -98,10 +106,11 @@ async function main() {
     key = adapter.config.user;
     openPercent = adapter.config.openPercent;
     adapter.subscribeStates('*');
-    getDeviceList();
+
+    getDeviceList()
 
     client.on('message', (msg, rinfo) => {
-        // adapter.log.info(`receive server message from ${rinfo.address}: ${rinfo.port}: ${msg}`);
+        adapter.log.info(`receive server message from ${rinfo.address}: ${rinfo.port}: ${msg}`);
         let obj = JSON.parse(msg.toString());
         if (obj.msgType === "GetDeviceListAck") {
             adapter.setObjectNotExists(obj.mac, {
@@ -184,6 +193,17 @@ async function main() {
                         }
                     });
 
+                    adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.targetAngle', {
+                        type: 'state',
+                        common: {
+                            name: 'targetAngle',
+                            unit: '°',
+                            role: 'value.motor',
+                            write: true,
+                            read: true
+                        }
+                    });
+
                     adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.rssi', {
                         type: 'state',
                         common: {
@@ -216,42 +236,58 @@ async function main() {
                             read: true
                         }
                     });
+
+                    adapter.setObjectNotExists(obj.mac + '.' + obj.data[motor].mac + '.currentAngle', {
+                        type: 'state',
+                        common: {
+                            name: 'currentAngle',
+                            unit: '°',
+                            role: 'value.motor',
+                            write: false,
+                            read: true
+                        }
+                    });
+
                     setStates(obj.mac + '.' + obj.data[motor].mac + '.currentPosition', "unknow");
+
+                    setStates(obj.mac + '.' + obj.data[motor].mac + '.currentAngle', "unknow");
+
                     if (key.length === 16)
                     {
-                        controlDevice(5, null, obj.data[motor].mac, obj.data[motor].deviceType, obj.token, key);
+                        controlDevice(5, null, obj.data[motor].mac, obj.data[motor].deviceType, obj.token, key, null);
                     }
                 }
             }
         }
-            if (obj.msgType === "WriteDeviceAck") {
-                adapter.log.info("WriteDeviceAck");
+        if (obj.msgType === "WriteDeviceAck") {
+            adapter.log.info("WriteDeviceAck");
+        }
+        if (obj.msgType === "Heartbeat") {
+            adapter.log.info("Heartbeat");
+        }
+        if (obj.msgType === "Report") {
+            const hub_mac = obj.mac.substring(0, obj.mac.length-4);
+            // adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
+            if (openPercent === "0")
+            {
+                setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
             }
-            if (obj.msgType === "Heartbeat") {
-                adapter.log.info("Heartbeat");
+            else if(openPercent === "100")
+            {
+                setStates(hub_mac+'.'+obj.mac+'.currentPosition', (100 - obj.data.currentPosition).toString());
             }
-            if (obj.msgType === "Report") {
-                const hub_mac = obj.mac.substring(0, obj.mac.length-4);
-                // adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
-                if (openPercent === "0")
-                {
-                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
-                }
-                else if(openPercent === "100")
-                {
-                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', (100 - obj.data.currentPosition).toString());
-                }
-                setStates(hub_mac+'.'+obj.mac+'.rssi', obj.data.RSSI.toString());
-                if (obj.data.voltageMode === 1)
-                {
-                    setStates(hub_mac+'.'+obj.mac+'.batteryLevel', (obj.data.batteryLevel/100).toString());
-                }
-                else
-                {
-                    setStates(hub_mac+'.'+obj.mac+'.batteryLevel', "120 or 220");
-                }
+            setStates(hub_mac+'.'+obj.mac+'.rssi', obj.data.RSSI.toString());
+            setStates(hub_mac+'.'+obj.mac+'.currentAngle', obj.data.currentAngle.toString());
+            if (obj.data.voltageMode === 1)
+            {
+                setStates(hub_mac+'.'+obj.mac+'.batteryLevel', (obj.data.batteryLevel/100).toString());
+            }
+            else
+            {
+                setStates(hub_mac+'.'+obj.mac+'.batteryLevel', "120 or 220");
+            }
 
-            }
+        }
     });
 }
 
@@ -271,7 +307,7 @@ function getDeviceList()
     })
 }
 
-function controlDevice(operation, targetPosition, mac, deviceType, token, key)  //控制设备
+function controlDevice(operation, targetPosition, mac, deviceType, token, key, targetAngle)  //控制设备
 {
     //adapter.log.info("enter device control")
     let sendData_obj;
@@ -301,12 +337,25 @@ function controlDevice(operation, targetPosition, mac, deviceType, token, key)  
             }
         }
     }
+    else if(targetAngle != null)
+    {
+        sendData_obj ={
+            msgType: "WriteDevice",
+            mac: mac,
+            deviceType: deviceType,
+            AccessToken: acc.generateAcc(token, key),
+            msgID: uuid.generateUUID(),
+            data:{
+                targetAngle: targetAngle
+            }
+        }
+    }
     sendData(JSON.stringify(sendData_obj));
 }
 
 function sendData(data)
 {
-    //console.log("send：" + data);
+    console.log("send：" + data);
     client.send(data,32100,'238.0.0.18', function (error) {
         if (error)
         {
