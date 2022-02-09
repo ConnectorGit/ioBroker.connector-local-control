@@ -51,6 +51,7 @@
       "targetPosition"
     ],
     "license": "MIT",
+    "connectionType": "cloud",
     "platform": "Javascript/Node.js",
     "main": "main.js",
     "icon": "connector-local-control.png",
