@@ -89,14 +89,12 @@ function startAdapter(options) {
 }
 
 function setStates(id, val) {
-    adapter.setState(id, {
+    adapter.setState(id,{
         val: val,
         ack: true
     });
     return '';
 }
-
-const delay = ms => new Promise((resolve, reject) => setTimeout(resolve, ms))
 
 async function main() {
     client.bind(32101, function () {
@@ -270,17 +268,32 @@ async function main() {
             // adapter.log.info("mac："+hub_mac+"  currentPercentage："+obj.data.currentPosition);
             if (openPercent === "0")
             {
-                setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
+                if (obj.data.hasOwnProperty("currentPosition"))
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', obj.data.currentPosition.toString());
+                }
             }
             else if(openPercent === "100")
             {
-                setStates(hub_mac+'.'+obj.mac+'.currentPosition', (100 - obj.data.currentPosition).toString());
+                if (obj.data.hasOwnProperty("currentPosition"))
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.currentPosition', (100 - obj.data.currentPosition).toString());
+                }
             }
-            setStates(hub_mac+'.'+obj.mac+'.rssi', obj.data.RSSI.toString());
-            setStates(hub_mac+'.'+obj.mac+'.currentAngle', obj.data.currentAngle.toString());
+            if (obj.data.hasOwnProperty("RSSI"))
+            {
+                setStates(hub_mac+'.'+obj.mac+'.rssi', obj.data.RSSI.toString());
+            }
+            if (obj.data.hasOwnProperty("currentAngle"))
+            {
+                setStates(hub_mac+'.'+obj.mac+'.currentAngle', obj.data.currentAngle.toString());
+            }
             if (obj.data.voltageMode === 1)
             {
-                setStates(hub_mac+'.'+obj.mac+'.batteryLevel', (obj.data.batteryLevel/100).toString());
+                if (obj.data.hasOwnProperty("batteryLevel"))
+                {
+                    setStates(hub_mac+'.'+obj.mac+'.batteryLevel', (obj.data.batteryLevel/100).toString());
+                }
             }
             else
             {
