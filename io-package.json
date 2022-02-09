@@ -52,6 +52,7 @@
     ],
     "license": "MIT",
     "connectionType": "cloud",
+    "dataSource": "poll",
     "platform": "Javascript/Node.js",
     "main": "main.js",
     "icon": "connector-local-control.png",
